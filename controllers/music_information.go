@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"../models"
 	"github.com/astaxie/beego"
-	"yin_you/models"
 )
 
 // MusicInformationController operations for MusicInformation

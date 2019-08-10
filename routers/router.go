@@ -24,6 +24,11 @@ func init() {
 		// 		&controllers.LoginController{},
 		// 	),
 		// ),
+		beego.NSNamespace("/like",
+			beego.NSInclude(
+				&controllers.LikeController{},
+			),
+		),
 	)
 	beego.Router("/api/v1/login", &controllers.LoginController{})
 	beego.AddNamespace(ns)

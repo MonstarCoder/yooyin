@@ -16,7 +16,7 @@ import (
 	"github.com/astaxie/beego/session"
 	"github.com/dgrijalva/jwt-go"
 
-	"../models"
+	"yooyin/models"
 )
 
 var globalSessions *session.Manager

@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "./routers"
+	_ "yooyin/routers"
 	"fmt"
 
 	"github.com/astaxie/beego"

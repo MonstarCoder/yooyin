@@ -8,7 +8,7 @@
 package routers
 
 import (
-	"../controllers"
+	"yooyin/controllers"
 
 
 	"github.com/astaxie/beego"

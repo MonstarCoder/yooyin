@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"../models"
+	"yooyin/models"
 	"github.com/astaxie/beego"
 )
 

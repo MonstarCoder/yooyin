@@ -1,3 +1,4 @@
+.DS_Store
 conf/app.conf
 *.tmp
-
+/yooyin

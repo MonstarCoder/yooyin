@@ -32,6 +32,7 @@ func (c *MusicInformationController) GetByNameAndType() {
 	info_type, _ := c.GetInt("type")
 	var limit int64 = 10
 	var offset int64
+
 	// limit: 10 (default is 10)
 	if v, err := c.GetInt64("limit"); err == nil {
 		limit = v

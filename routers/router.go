@@ -9,32 +9,22 @@ package routers
 
 import (
 	"yooyin/controllers"
-
-
 	"github.com/astaxie/beego"
 )
 
 func init() {
-	ns := beego.NewNamespace("/v1",
-
+	ns := beego.NewNamespace("/api/v1",
 		beego.NSNamespace("/music_information",
 			beego.NSInclude(
 				&controllers.MusicInformationController{},
 			),
 		),
-		beego.NSNamespace("/login",
-			beego.NSInclude(
-
-
-
-	&controllers.LoginController{},
-			),
-		),
-		// beego.Get('/', func(context *context.Context) {
-		//    context.Output.Body([]byte("hello"))
-		//})
-
+		// beego.NSNamespace("/login",
+		// 	beego.NSInclude(
+		// 		&controllers.LoginController{},
+		// 	),
+		// ),
 	)
-	beego.Router("/login", &controllers.LoginController{})
+	beego.Router("/api/v1/login", &controllers.LoginController{})
 	beego.AddNamespace(ns)
 }

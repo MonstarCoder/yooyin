@@ -6,7 +6,7 @@ import (
 )
 
 type LikeController struct {
- 	beego.Controller
+	beego.Controller
 }
 
 type LikeReq struct {
@@ -16,11 +16,12 @@ type LikeReq struct {
 }
 
 type LikeRsp struct {
- IsMatched bool //是否匹配成功
+	IsMatched bool //是否匹配成功
 }
 
 func (this *LikeController) LikeService() {
 	var likeRelationInformation models.LikeRelationInformation
+	var contactInformation models.ContactInformation
 	var likeList []models.LikeRelationInformation
 	isMatched := false
 
@@ -46,6 +47,16 @@ func (this *LikeController) LikeService() {
 	}
 
 	rsp.IsMatched = isMatched
+
+	if isMatched == true {
+		contactInformation.UserId = this.GetString("UserId")
+		contactInformation.ContactUserId = this.GetString("TargetUserId")
+		models.AddContactInformation(&contactInformation)
+
+		contactInformation.UserId = this.GetString("TargetUserId")
+		contactInformation.ContactUserId = this.GetString("UserId")
+		models.AddContactInformation(&contactInformation)
+	}
 
 	JsonResult(&this.Controller, 0, "", rsp)
 }

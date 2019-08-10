@@ -1,8 +1,8 @@
 package main
 
 import (
+	_ "./routers"
 	"fmt"
-	_ "yin_you/routers"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"

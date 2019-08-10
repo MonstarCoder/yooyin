@@ -8,7 +8,8 @@
 package routers
 
 import (
-	"yin_you/controllers"
+	"../controllers"
+
 
 	"github.com/astaxie/beego"
 )
@@ -21,6 +22,19 @@ func init() {
 				&controllers.MusicInformationController{},
 			),
 		),
+		beego.NSNamespace("/login",
+			beego.NSInclude(
+
+
+
+	&controllers.LoginController{},
+			),
+		),
+		// beego.Get('/', func(context *context.Context) {
+		//    context.Output.Body([]byte("hello"))
+		//})
+
 	)
+	beego.Router("/login", &controllers.LoginController{})
 	beego.AddNamespace(ns)
 }

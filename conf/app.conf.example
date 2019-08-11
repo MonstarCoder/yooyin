@@ -4,9 +4,14 @@ runmode = dev
 autorender = false
 copyrequestbody = true
 EnableDocs = true
+
 # database
 databaseHost=localhost
 databasePort=3306
 databaseUserName=
 databasePasswd=
 databaseName=
+
+# weixin
+wx_appid=
+wx_appsecret=

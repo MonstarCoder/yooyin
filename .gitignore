@@ -3,3 +3,4 @@ conf/app.conf
 *.tmp
 /yooyin
 /routers/commentsRouter*
+/swagger

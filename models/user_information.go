@@ -29,3 +29,7 @@ func init() {
 	// register model
 	orm.RegisterModel(new(YooyinUser))
 }
+
+func (t *YooyinUser) TableName() string {
+	return "yooyin_user"
+}

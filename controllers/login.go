@@ -7,33 +7,33 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/httplib"
 	"github.com/astaxie/beego/orm"
-	"github.com/astaxie/beego/session"
 	"github.com/dgrijalva/jwt-go"
 
 	"yooyin/models"
 )
 
-var globalSessions *session.Manager
+//var globalSessions *session.Manager
 
-func init() {
-	sessionConfig := &session.ManagerConfig{
-		CookieName:"gosessionid",
-		EnableSetCookie: true,
-		Gclifetime:3600,
-		Maxlifetime: 3600,
-		Secure: true,
-		CookieLifeTime: 3600,
-		ProviderConfig: "./tmp",
-	}
-	globalSessions, _ = session.NewManager("memory",sessionConfig)
-	go globalSessions.GC()
-}
+//func init() {
+//	sessionConfig := &session.ManagerConfig{
+//		CookieName:"gosessionid",
+//		EnableSetCookie: true,
+//		Gclifetime:3600,
+//		Maxlifetime: 3600,
+//		Secure: true,
+//		CookieLifeTime: 3600,
+//		ProviderConfig: "./tmp",
+//	}
+//	globalSessions, _ = session.NewManager("memory",sessionConfig)
+//	go globalSessions.GC()
+//}
 
 type LoginController struct {
 	beego.Controller
@@ -47,6 +47,11 @@ type WXLoginResponse struct {
 	ErrMsg     string `json:"errmsg"`
 }
 
+type Watermark struct {
+	AppID     string `json:"appid"`
+	TimeStamp int64  `json:"timestamp"`
+}
+
 type WXUserInfo struct {
 	OpenID    string    `json:"openId,omitempty"`
 	NickName  string    `json:"nickName"`
@@ -57,6 +62,7 @@ type WXUserInfo struct {
 	City      string    `json:"city"`
 	UnionID   string    `json:"unionId,omitempty"`
 	Language  string    `json:"language"`
+	Watermark Watermark `json:"watermark,omitempty"`
 }
 
 type ResUserInfo struct {
@@ -74,6 +80,8 @@ type LoginBody struct {
 
 func (this *LoginController) LoginByWeixin() {
 
+	fmt.Println("begin LoginByWeixin")
+
 	var lb LoginBody
 	body := this.Ctx.Input.RequestBody
 
@@ -82,14 +90,20 @@ func (this *LoginController) LoginByWeixin() {
 
 	userInfo := Login(lb.Code, lb.UserInfo)
 	if userInfo == nil {
-
+		fmt.Println("userInfo==nil")
 	}
 
+	fmt.Println("login succeed")
 	o := orm.NewOrm()
 
 	var user models.YooyinUser
 	usertable := new(models.YooyinUser)
+	fmt.Println(usertable)
+	fmt.Println("before query database")
+	fmt.Println(userInfo.OpenID)
+	//err = o.QueryTable(usertable.TableName()).Filter("weixin_openid", userInfo.OpenID).One(&user)
 	err = o.QueryTable(usertable).Filter("weixin_openid", userInfo.OpenID).One(&user)
+	fmt.Println("after query database")
 	if err == orm.ErrNoRows {
 		newuser := models.YooyinUser{WeixinOpenid: userInfo.OpenID, Avatar: userInfo.AvatarUrl, Gender: userInfo.Gender,
 			Nickname: userInfo.NickName}
@@ -111,7 +125,7 @@ func (this *LoginController) LoginByWeixin() {
 	// TODO  save sessionIDs
 	//sessionKey := Create(Int2String(user.Nickname))
 	sessionKey := Create(user.Nickname)
-	//fmt.Println("sessionkey==" + sessionKey)
+	fmt.Println("sessionkey==" + sessionKey)
 
 	rtnInfo := make(map[string]interface{})
 	rtnInfo["token"] = sessionKey
@@ -119,7 +133,6 @@ func (this *LoginController) LoginByWeixin() {
 
 	ReturnHTTPSuccess(&this.Controller, rtnInfo)
 	this.ServeJSON()
-	//JsonResult(&this.Controller, 0, "", )
 }
 
 var key = []byte("adfadf!@#2")
@@ -176,8 +189,9 @@ func ReturnHTTPSuccess(this *beego.Controller, val interface{}) {
 
 func Login(code string, fullUserInfo ResUserInfo) *WXUserInfo {
 
-	secret := beego.AppConfig.String("weixin::secret")
-	appid := beego.AppConfig.String("weixin::appid")
+	fmt.Println("begin login")
+	secret := beego.AppConfig.String("wx_appsecret")
+	appid := beego.AppConfig.String("wx_appid")
 
 	// https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code
 	// https://developers.weixin.qq.com/miniprogram/dev/api-backend/auth.code2Session.html
@@ -190,20 +204,24 @@ func Login(code string, fullUserInfo ResUserInfo) *WXUserInfo {
 	var res WXLoginResponse
 	req.ToJSON(&res)
 
+	fmt.Println("after httplib.Get")
+
 	s := sha1.New()
 	s.Write([]byte(fullUserInfo.RawData + res.SessionKey))
 	sha1 := s.Sum(nil)
 	sha1hash := hex.EncodeToString(sha1)
 
-	// fmt.Println(fullUserInfo.RawData + res.SessionKey)
-	// fmt.Println(fullUserInfo.Signature)
-	// fmt.Println(sha1hash)
+	fmt.Println(res.SessionKey)
+	fmt.Println(fullUserInfo.RawData)
+	fmt.Println(fullUserInfo.Signature)
+	fmt.Println(sha1hash)
 
 	if fullUserInfo.Signature != sha1hash {
 		return nil
 	}
 	userinfo := DecryptUserInfoData(res.SessionKey, fullUserInfo.EncryptedData, fullUserInfo.IV)
 
+	fmt.Println("return login")
 	return userinfo
 
 }

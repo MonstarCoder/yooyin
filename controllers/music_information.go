@@ -56,3 +56,25 @@ func (c *MusicInformationController) GetByNameAndType() {
 
 	JsonResult(&c.Controller, 0, "", MusicInformationQueryResult{TotalCount: totalCount, MusicInformation: musicInformations})
 }
+
+// InsertUserLikeMusicInfo ...
+// @Title Insert User Like Music
+// @Description add user like music information
+// @Param	uuid	query	string	true	"用户uuid"
+// @Param	type	query	integer	true	"匹配类型"
+// @Param	like_fields	query	string	true	"用户喜欢的内容，json类型，具体由前端定义，后端入库不参与解析"
+// @Success 200 {object} controllers.JsonReturnDataMessage
+// @Failure 403
+// @router /add_user_like_music [post]
+func (c *MusicInformationController) InsertUserLikeMusicInfo() {
+	uuid := c.GetString("uuid")
+	likeType, _ := c.GetInt("type")
+	likeFields := c.GetString("like_fields")
+
+	userLike := models.UserLikeMusicInfo{Uuid: uuid, Type: likeType, LikeFields: likeFields}
+	_, err := models.AddUserLikeMusicInfo(&userLike)
+	if err != nil {
+		JsonResult(&c.Controller, 1, err.Error(), nil)
+	}
+	JsonResult(&c.Controller, 0, "success", nil)
+}

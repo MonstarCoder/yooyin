@@ -5,17 +5,17 @@ import (
 	"time"
 )
 
-type MusicType struct {
+type MusicStyle struct {
 	Id 						int       `json:"id"`
 	Name          string    `json:"name"`
 	CreatedAt     time.Time `json:"createdAt"`
 	UpdatedAt     time.Time `json:"updatedAt"`
 }
 
-func (u *MusicType) TableName() string {
-	return "music_types"
+func (u *MusicStyle) TableName() string {
+	return "music_styles"
 }
 
 func init() {
-	orm.RegisterModel(new(MusicType))
+	orm.RegisterModel(new(MusicStyle))
 }

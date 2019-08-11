@@ -1,22 +1,23 @@
 package main
 
 import (
-	_ "yooyin/routers"
 	"fmt"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+
+	_ "yooyin/routers"
 )
 
 func init() {
 	_ = orm.RegisterDataBase("default", "mysql",
 		fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
-			beego.AppConfig.String("databaseUserName"),
-			beego.AppConfig.String("databasePasswd"),
-			beego.AppConfig.String("databaseHost"),
-			beego.AppConfig.String("databasePort"),
-			beego.AppConfig.String("databaseName"),
+			beego.AppConfig.String("database::user"),
+			beego.AppConfig.String("database::password"),
+			beego.AppConfig.String("database::host"),
+			beego.AppConfig.String("database::port"),
+			beego.AppConfig.String("database::database"),
 		))
 }
 

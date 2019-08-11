@@ -17,6 +17,7 @@ type User struct {
 	City          string    `json:"city"`
 	Language      string    `json:"language"`
 	CreatedAt     time.Time `json:"createdAt"`
+	UpdatedAt     time.Time `json:"updatedAt"`
 }
 
 func (u *User) TableName() string {

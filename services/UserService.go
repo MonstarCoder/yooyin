@@ -1,23 +1,20 @@
 package services
 
 import (
-	"github.com/astaxie/beego/orm"
 	"yooyin/models"
 )
 
-type userService struct {}
-
-var UserService userService
-
-func (this *userService) orm() orm.Ormer {
-	var o orm.Ormer
-	if o == nil {
-		o = orm.NewOrm()
-	}
-	return o
+type UserService struct {
+	BaseService
 }
 
-func (this *userService) LoginUser(user *models.User) error {
+func (this *UserService) LoginUser(user *models.User) error {
 	_, _, err := this.orm().ReadOrCreate(user, "OpenId")
 	return err
+}
+
+func (this *UserService) GetUserByOpenId(openId string) (*models.User, error) {
+	user := &models.User{ OpenId: openId }
+	err := this.orm().Read(user, "OpenId")
+	return user, err
 }

@@ -7,12 +7,9 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	// "strconv"
-	// "time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/httplib"
-	// "github.com/dgrijalva/jwt-go"
 
 	"yooyin/models"
 	"yooyin/services"
@@ -23,7 +20,7 @@ type AuthController struct {
 }
 
 // Login 请求 POST 数据
-type loginRequest struct {
+type LoginRequest struct {
 	Code          string     `json:"code"`
 	RawData       string     `json:"rawData"`
 	Signature     string     `json:"signature"`
@@ -32,7 +29,7 @@ type loginRequest struct {
 }
 
 // Login 请求 响应 数据
-type loginResponse = wxUserInfo
+type LoginResponse = wxUserInfo
 
 // 向微信服务器请求 session_key 返回数据，谜之 openid unionid 大小写不同步
 type wxResponse struct {
@@ -57,7 +54,7 @@ type wxUserInfo struct {
 }
 
 func (this *AuthController) Login() {
-	req := new(loginRequest)
+	req := new(LoginRequest)
 
 	if err := json.Unmarshal(this.Ctx.Input.RequestBody, req); err != nil {
 		this.JsonResponse(1, "Bad Request", nil)
@@ -77,7 +74,8 @@ func (this *AuthController) Login() {
 		City: userInfo.City,
 		Language: userInfo.Language,
 	}
-	services.UserService.LoginUser(user)
+
+	new(services.UserService).LoginUser(user)
 
 	this.SetSession("openId", user.OpenId)
 
@@ -86,7 +84,7 @@ func (this *AuthController) Login() {
 
 // 微信小程序登陆，返回解密后的用户信息
 // @see https://developers.weixin.qq.com/miniprogram/dev/api-backend/auth.code2Session.html
-func wxLogin(req *loginRequest) *wxUserInfo {
+func wxLogin(req *LoginRequest) *wxUserInfo {
 	appid := beego.AppConfig.String("weixin::appid")
 	secret := beego.AppConfig.String("weixin::appsecret")
 

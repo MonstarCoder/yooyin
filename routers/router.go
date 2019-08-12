@@ -25,6 +25,11 @@ func init() {
 		),
 		beego.NSRouter("/user_like_types", &controllers.UserLikeTypeController{}, "get:GetUserLikeTypes"),
 		beego.NSRouter("/music_styles", &controllers.MusicStyleController{}, "get:GetMusicStyles"),
+		beego.NSNamespace("/match",
+			beego.NSInclude(
+				&controllers.MatchController{},
+			),
+		),
 	)
 
 	beego.AddNamespace(nsAuth)

@@ -1,12 +1,22 @@
-appname = yooyin
-httpport = 8080
-runmode = dev
-autorender = false
-copyrequestbody = true
-EnableDocs = true
-# database
-databaseHost=localhost
-databasePort=3306
-databaseUserName=
-databasePasswd=
-databaseName=
+appname=yooyin
+httpport=8080
+runmode=dev
+autorender=false
+copyrequestbody=true
+EnableDocs=true
+
+# session 相关配置
+sessionon=true
+sessionprovider=memory
+
+# database 相关配置
+[database]
+host=localhost
+port=3306
+user=
+password=
+database=
+
+[weixin]
+appid=
+appsecret=

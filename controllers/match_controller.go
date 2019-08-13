@@ -32,11 +32,11 @@ func RandInt64(min int64, max int64) int64 {
 
 
 func (this *MatchController) MatchUser (req MatchRequest) (rsp []MatchResponse) {
-	var MatchList []models.MatchInformation
+	var MatchList []models.UserLikeMusicInfo
 	matchType, _ := this.GetInt("MatchType")
 
 	//下面接口覃良给，返回所有用户的列表
-	models.GetMatchInformationById(&MatchList, matchType)
+	models.GetAllUserLikeMusicInfo(&MatchList)
 
 	//剔除已匹配用户
 	var TargetList []string
@@ -46,8 +46,8 @@ func (this *MatchController) MatchUser (req MatchRequest) (rsp []MatchResponse) 
 		TargetList = append(TargetList, v.TargetUserId)
 	}
 	for _, v  := range MatchList{
-		index := arrays.ContainsString(TargetList, v.UuId)
-		if (v.UuId != this.GetString("UserId")) && index == -1 {
+		index := arrays.ContainsString(TargetList, v.Uuid)
+		if (v.Uuid != this.GetString("UserId")) && (index == -1) && (matchType == v.Type) {
 			var tmpRsp MatchResponse
 			tmpRsp.MatchRate = float32(RandInt64(8000, 9999)/100)
 			tmpRsp.CoLikeList = v.LikeFields

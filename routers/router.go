@@ -30,7 +30,7 @@ func init() {
 
 		beego.NSRouter("/music_styles", &controllers.MusicStyleController{}, "get:GetMusicStyles"),
 
-		beego.NSRouter("/user_match", &controllers.MatchController{}, "get:MatchUser"),
+		beego.NSRouter("/user_match", &controllers.UserMatchController{}, "get:GetUserMatch"),
 	)
 
 	beego.AddNamespace(nsAuth)

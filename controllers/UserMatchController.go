@@ -1,15 +1,14 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
 	"github.com/wxnacy/wgo/arrays"
 	"math/rand"
 	"yooyin/models"
 
 )
 
-type MatchController struct {
-	beego.Controller
+type UserMatchController struct {
+	BaseController
 }
 
 type MatchRequest struct {
@@ -31,7 +30,7 @@ func RandInt64(min int64, max int64) int64 {
 
 
 
-func (this *MatchController) MatchUser (req MatchRequest) (rsp []MatchResponse) {
+func (this *UserMatchController) GetUserMatch (req MatchRequest) (rsp []MatchResponse) {
 	var MatchList []models.UserLikeMusicInfo
 	matchType, _ := this.GetInt("MatchType")
 

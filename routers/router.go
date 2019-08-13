@@ -12,24 +12,25 @@ func init() {
 	)
 
 	nsApi := beego.NewNamespace("/api/v1",
-		beego.NSBefore(authFilter),
+		// beego.NSBefore(authFilter),
+
 		beego.NSNamespace("/music_information",
 			beego.NSInclude(
 				&controllers.MusicInformationController{},
 			),
 		),
+
 		beego.NSNamespace("/like",
 			beego.NSInclude(
 				&controllers.LikeController{},
 			),
 		),
+
 		beego.NSRouter("/user_like_types", &controllers.UserLikeTypeController{}, "get:GetUserLikeTypes"),
+
 		beego.NSRouter("/music_styles", &controllers.MusicStyleController{}, "get:GetMusicStyles"),
-		beego.NSNamespace("/match",
-			beego.NSInclude(
-				&controllers.MatchController{},
-			),
-		),
+
+		beego.NSRouter("/user_match", &controllers.MatchController{}, "get:MatchUser"),
 	)
 
 	beego.AddNamespace(nsAuth)

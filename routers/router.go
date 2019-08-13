@@ -1,9 +1,9 @@
 package routers
 
 import (
-	"yooyin/controllers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
+	"yooyin/controllers"
 )
 
 func init() {
@@ -12,7 +12,7 @@ func init() {
 	)
 
 	nsApi := beego.NewNamespace("/api/v1",
-		// beego.NSBefore(authFilter),
+		beego.NSBefore(authFilter),
 
 		beego.NSNamespace("/music_information",
 			beego.NSInclude(

@@ -59,7 +59,7 @@ func (c *MusicInformationController) GetByNameAndType() {
 // InsertUserLikeMusicInfo ...
 // @Title Insert User Like Music
 // @Description add user like music information
-// @Param	uuid	query	string	true	"测试时需要填入的字段"
+// @Param	uuid	query	string	false	"测试时需要填入的字段"
 // @Param	type	query	integer	true	"匹配类型"
 // @Param	like_fields	query	string	true	"用户喜欢的内容，json类型(json字符串)，具体由前端定义，后端入库不参与解析"
 // @Success 200 {object} controllers.JsonReturnDataMessage
@@ -82,16 +82,17 @@ func (c *MusicInformationController) InsertUserLikeMusicInfo() {
 // GetUserLikeMusicInfo ...
 // @Title get User Like Music
 // @Description get user like music information
-// @Param	uuid	query	string	true	"测试时需要填入的字段"
-// @Success 200 {object} models.UserLikeMusicInfo
+// @Param	uuid	query	string	false	"测试时需要填入的字段"
+// @Success 200 {object} []models.UserLikeMusicInfo
 // @Failure 403
 // @router /get_user_like_music [get]
 func (c *MusicInformationController) GetUserLikeMusicInfo() {
 	//uuid := c.GetString("uuid")
 	uuid := c.GetSession("openId").(string)
-	v, err := models.GetUserLikeMusicInfoByUuId(uuid)
+	var likeInfos []models.UserLikeMusicInfo
+	err := models.GetUserLikeMusicInfoByUuId(uuid, &likeInfos)
 	if err != nil {
 		JsonResult(&c.Controller, 1, err.Error(), nil)
 	}
-	JsonResult(&c.Controller, 0, "success", v)
+	JsonResult(&c.Controller, 0, "success", likeInfos)
 }

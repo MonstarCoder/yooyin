@@ -21,15 +21,15 @@ func init() {
 
 func AddUserLikeMusicInfo(m *UserLikeMusicInfo) (id int64, err error) {
 	o := orm.NewOrm()
+	_, _ = o.Delete(m, "uuid", "type")
 	id, err = o.Insert(m)
 	return
 }
 
-func GetUserLikeMusicInfoByUuId(uuid string) (v *UserLikeMusicInfo, err error) {
+func GetUserLikeMusicInfoByUuId(uuid string, infos *[]UserLikeMusicInfo) (err error) {
 	o := orm.NewOrm()
-	v = &UserLikeMusicInfo{Uuid: uuid}
-	err = o.QueryTable(v).Filter("uuid", uuid).OrderBy("-id").One(v)
-	return v, err
+	_, err = o.QueryTable(new(UserLikeMusicInfo)).Filter("uuid", uuid).OrderBy("-id").All(infos)
+	return err
 }
 
 func GetAllUserLikeMusicInfo(info *[]UserLikeMusicInfo) (count int64, err error) {

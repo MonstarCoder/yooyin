@@ -67,7 +67,8 @@ func (c *MusicInformationController) GetByNameAndType() {
 // @Failure 403
 // @router /add_user_like_music [post]
 func (c *MusicInformationController) InsertUserLikeMusicInfo() {
-	uuid := c.GetString("uuid")
+	//uuid := c.GetString("uuid")
+	uuid := c.GetSession("openId").string
 	likeType, _ := c.GetInt("type")
 	likeFields := c.GetString("like_fields")
 

@@ -13,7 +13,7 @@ type UserMatchController struct {
 
 type MatchRequest struct {
 	MatchType	int 	// 0=歌单匹配 1=音乐节目匹配 2=测试匹配
-	UserId 		string
+	//UserId 		string
 }
 
 type MatchResponse struct {
@@ -40,13 +40,14 @@ func (this *UserMatchController) GetUserMatch (req MatchRequest) (rsp []MatchRes
 	//剔除已匹配用户
 	var TargetList []string
 	var LikeRelationList []models.LikeRelationInformation
-	models.GetTargetUidById(&LikeRelationList, this.GetString("UserId"))
+	userid := this.GetSession("openId").(string)
+	models.GetTargetUidById(&LikeRelationList, userid)
 	for _, v := range LikeRelationList{
 		TargetList = append(TargetList, v.TargetUserId)
 	}
 	for _, v  := range MatchList{
 		index := arrays.ContainsString(TargetList, v.Uuid)
-		if (v.Uuid != this.GetString("UserId")) && (index == -1) && (matchType == v.Type) {
+		if (v.Uuid != userid) && (index == -1) && (matchType == v.Type) {
 			var tmpRsp MatchResponse
 			tmpRsp.MatchRate = float32(RandInt64(8000, 9999)/100)
 			tmpRsp.CoLikeList = v.LikeFields

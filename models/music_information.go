@@ -9,10 +9,10 @@ import (
 )
 
 type MusicInformation struct {
-	Id              int    `orm:"column(id);auto"`
-	Name            string `orm:"column(name);size(512);null" description:"歌名或者歌手名称或者标签"`
-	Type            int    `orm:"column(type);null" description:"类型，具体自己定义"`
-	AddtionalFields string `orm:"column(addtional_fields);null" description:"json字符串，此处需要前端定义不同类型需要展现的字段以及爬虫能入库的信息"`
+	Id              int    `json:"id"`
+	Name            string `json:"name"`
+	Type            int    `json:"type"`
+	AddtionalFields string `json:"additional_fields"`
 }
 
 func (t *MusicInformation) TableName() string {

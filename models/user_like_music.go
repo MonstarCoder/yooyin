@@ -5,10 +5,10 @@ import (
 )
 
 type UserLikeMusicInfo struct {
-	Id         int    `orm:"column(id);auto"`
-	Uuid       string `orm:"column(uuid)"`
-	Type       int    `orm:"column(type)"`
-	LikeFields string `orm:"column(like_fields)" description:"用户喜欢的歌曲信息，json存储，由前端定义"`
+	Id         int    `json:"id"`
+	Uuid       string `json:"uuid"`
+	Type       int    `json:"type"`
+	LikeFields string `json:"like_fields"`
 }
 
 func (t *UserLikeMusicInfo) TableName() string {

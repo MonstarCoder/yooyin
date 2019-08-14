@@ -1,6 +1,10 @@
 package controllers
 
 import (
+	"encoding/json"
+
+	"github.com/astaxie/beego/orm"
+
 	"yooyin/models"
 )
 
@@ -12,6 +16,11 @@ type MusicInformationController struct {
 type MusicInformationQueryResult struct {
 	TotalCount       int64                     `json:"total_count"`
 	MusicInformation []models.MusicInformation `json:"music_information"`
+}
+
+type IntertRequery struct {
+	Type          int        `json:"type"`
+	LikeFields    string     `json:"like_fields"`
 }
 
 // GetByNameAndType ...
@@ -66,10 +75,16 @@ func (c *MusicInformationController) GetByNameAndType() {
 // @Failure 403
 // @router /add_user_like_music [post]
 func (c *MusicInformationController) InsertUserLikeMusicInfo() {
+	req := new(IntertRequery)
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, req); err != nil {
+		c.JsonResponse(1, "Bad Request", nil)
+	}
+
 	//uuid := c.GetString("uuid")
 	uuid := c.GetSession("openId").(string)
-	likeType, _ := c.GetInt("type")
-	likeFields := c.GetString("like_fields")
+	likeType := req.Type
+	likeFields := req.LikeFields
 
 	userLike := models.UserLikeMusicInfo{Uuid: uuid, Type: likeType, LikeFields: likeFields}
 	_, err := models.AddUserLikeMusicInfo(&userLike)
@@ -82,15 +97,26 @@ func (c *MusicInformationController) InsertUserLikeMusicInfo() {
 // GetUserLikeMusicInfo ...
 // @Title get User Like Music
 // @Description get user like music information
-// @Param	uuid	query	string	false	"测试时需要填入的字段"
+// @Param	uuid	query	string	false	"openid"
+// @Param	type	query	string	false	"类型"
 // @Success 200 {object} []models.UserLikeMusicInfo
 // @Failure 403
 // @router /get_user_like_music [get]
 func (c *MusicInformationController) GetUserLikeMusicInfo() {
-	//uuid := c.GetString("uuid")
-	uuid := c.GetSession("openId").(string)
+	o := orm.NewOrm()
+	uuid := c.GetString("uuid")
+	likeType := c.GetString("type")
+	if uuid == "" {
+		uuid = c.GetSession("openId").(string)
+	}
+
+	query := o.QueryTable(new(models.UserLikeMusicInfo)).Filter("uuid", uuid)
+	if likeType != "" {
+		query = query.Filter("type", likeType)
+	}
+
 	var likeInfos []models.UserLikeMusicInfo
-	err := models.GetUserLikeMusicInfoByUuId(uuid, &likeInfos)
+	_, err := query.OrderBy("-id").All(&likeInfos)
 	if err != nil {
 		JsonResult(&c.Controller, 1, err.Error(), nil)
 	}
